@@ -14,7 +14,7 @@ from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
 from sqlalchemy.exc import SQLAlchemyError
-#from models import *
+from models import *
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -24,89 +24,9 @@ from sqlalchemy.exc import SQLAlchemyError
 app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+db.init_app(app)
+#migrate = Migrate(app, db)
 
-#----------------------------------------------------------------------------#
-# Models.
-#----------------------------------------------------------------------------#
-
-class Venue(db.Model):
-    __tablename__ = 'Venue'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
-    city = db.Column(db.String(120), nullable=False)
-    state = db.Column(db.String(120), nullable=False)
-    address = db.Column(db.String(120), nullable=False)
-    phone = db.Column(db.String(120), nullable=False)
-    genres = db.Column(db.ARRAY(db.String(120)), nullable=False)
-    facebook_link = db.Column(db.String(120), nullable=True)
-    image_link = db.Column(db.String(500), nullable=True)
-    website_link = db.Column(db.String(120), nullable=True)
-    seeking_talent = db.Column(db.Boolean(), nullable=False, default=False)
-    seeking_description = db.Column(db.String(500), nullable=False)
-    shows = db.relationship('Show', backref='show_venues', lazy='joined', cascade='all, delete')
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
-    
-    def to_dict(self):
-      return {
-        'id': self.id,
-        'name': self.name,
-        'city': self.city,
-        'state': self.state,
-        'address': self.address,
-        'phone': self.phone,
-        'genres': self.genres,
-        'facebook_link': self.facebook_link,
-        'image_link': self.image_link,
-        'website': self.website_link,
-        'seeking_talent': self.seeking_talent,
-        'seeking_description': self.seeking_description
-      }
-    
-    def __repr__(self):
-      return f'<Venue Id: {self.id}, Name: {self.name}>'
-class Artist(db.Model):
-    __tablename__ = 'Artist'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    city = db.Column(db.String(120), nullable=False)
-    state = db.Column(db.String(120), nullable=False)
-    phone = db.Column(db.String(120))
-    genres = db.Column(db.String(120), nullable=False)
-    facebook_link = db.Column(db.String(120))
-    image_link = db.Column(db.String(500))
-    website_link = db.Column(db.String(120))
-    looking_for_venues = db.Column(db.Boolean(), nullable=False, default=False)
-    seeking_description = db.Column(db.String(500))    
-    shows = db.relationship('Show', backref='artist_venues', lazy='joined', cascade='all, delete')
-
-    def __repr__(self):
-      return f'<Artist Id: {self.id}, Name: {self.name}>'
-    
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
-class Show(db.Model):
-    
-    __tablename__ = 'Show'
-    id = db.Column(db.Integer, primary_key=True)
-    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
-    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
-    start_time = db.Column(db.DateTime, nullable=False)
-
-    def to_dict(self):
-      return {
-        'id': self.id,
-        'artist_id': self.artist_id,
-        'venue_id': self.venue_id,
-        'start_time': self.start_time
-      }
-
-    def __repr__(self):
-      return f'<Show Id: {self.id}, Artist: {self.artist_id}, Venue: {self.venue_id}>'
-
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
 
 
 #----------------------------------------------------------------------------#
@@ -338,10 +258,16 @@ def create_venue_submission():
 def delete_venue(venue_id):
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
-
+  try:
+    Venue.query.filter_by(id=venue_id).delete()
+    db.session.commit()
+  except:
+    db.session.rollback()
+  finally:
+    db.session.close()
+  return None
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return None
 
 #  Artists
 #  ----------------------------------------------------------------
@@ -385,26 +311,59 @@ def search_artists():
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
   # shows the artist page with the given artist_id
-  return render_template('pages/show_artist.html', artist=Artist.query().all())
+
+  artist = Artist.query.get(artist_id)
+  data=artist.to_dict()
+
+  query_past_shows = (
+    db.session
+      .query(Show)
+      .join(Venue)
+      .filter(Show.artist_id==artist_id)
+      .filter(Show.start_time<datetime.now())
+      .all()
+  )
+
+  past_shows = []
+  for show in query_past_shows:
+    past_shows.append({
+      "venue_id": show.show_venues.id,
+      "venue_name": show.show_venues.name,
+      "venue_image_link": show.show_venues.image_link,
+      "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+    })
+
+  query_upcoming_shows = (
+    db.session
+      .query(Show)
+      .join(Venue)
+      .filter(Show.artist_id==artist_id)
+      .filter(Show.start_time>=datetime.now())
+      .all()
+  )
+  
+  upcoming_shows = []
+  for show in query_upcoming_shows:
+    upcoming_shows.append({
+      "venue_id": show.show_venues.id,
+      "venue_name": show.show_venues.name,
+      "venue_image_link": show.show_venues.image_link,
+      "start_time": show.start_time.strftime('%Y-%m-%d %H:%M:%S')
+    })
+  
+  data['past_shows'] = past_shows
+  data['upcoming_shows'] = upcoming_shows
+  data['past_shows_count'] = len(past_shows)
+  data['upcoming_shows_count'] = len(upcoming_shows)
+
+  return render_template('pages/show_artist.html', artist=data)
 
 #  Update
 #  ----------------------------------------------------------------
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
-  form = ArtistForm()
-  artist={
-    "id": 4,
-    "name": "Guns N Petals",
-    "genres": ["Rock n Roll"],
-    "city": "San Francisco",
-    "state": "CA",
-    "phone": "326-123-5000",
-    "website": "https://www.gunsnpetalsband.com",
-    "facebook_link": "https://www.facebook.com/GunsNPetals",
-    "seeking_venue": True,
-    "seeking_description": "Looking for shows to perform at in the San Francisco Bay Area!",
-    "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
-  }
+  artist = Artist.query.get(artist_id)
+  form = ArtistForm(obj=artist)
   # TODO: populate form with fields from artist with ID <artist_id>
   return render_template('forms/edit_artist.html', form=form, artist=artist)
 
@@ -413,32 +372,53 @@ def edit_artist_submission(artist_id):
   # TODO: take values from the form submitted, and update existing
   # artist record with ID <artist_id> using the new attributes
 
-  return redirect(url_for('show_artist', artist_id=artist_id))
+  # Retrieve the artist from the database based on the artist_id
+  form = ArtistForm(request.form)
+
+  try:
+    artist = Artist.query.get(artist_id)
+    form.populate_obj(artist)
+    db.session.commit()
+    flash(f"Venue {form.name.data} was successfully edited!")
+
+  except ValueError as e:
+    db.session.rollback()
+    flash(f"An error occurred in {form.name.data}. Error: {str(e)}")
+
+  finally:
+    db.session.close()
+  
+  return redirect(url_for("show_artist", artist_id=artist_id))
+
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
-  form = VenueForm()
-  venue={
-    "id": 1,
-    "name": "The Musical Hop",
-    "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
-    "address": "1015 Folsom Street",
-    "city": "San Francisco",
-    "state": "CA",
-    "phone": "123-123-1234",
-    "website": "https://www.themusicalhop.com",
-    "facebook_link": "https://www.facebook.com/TheMusicalHop",
-    "seeking_talent": True,
-    "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
-    "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
-  }
+  venue = Venue.query.get(venue_id)
+  form = VenueForm(obj=venue)
+
   # TODO: populate form with values from venue with ID <venue_id>
-  return render_template('forms/edit_venue.html', form=form, venue=venue)
+  return render_template("forms/edit_venue.html", form=form, venue=venue)
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
   # TODO: take values from the form submitted, and update existing
   # venue record with ID <venue_id> using the new attributes
+
+  form = VenueForm(request.form)
+
+  try:
+    venue = Venue.query.get(venue_id)
+    form.populate_obj(venue)
+    db.session.commit()
+    flash(f"Venue {form.name.data} was successfully edited!")
+
+  except ValueError as e:
+    db.session.rollback()
+    flash(f"An error occurred in {form.name.data}. Error: {str(e)}")
+
+  finally:
+    db.session.close()
+
   return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
