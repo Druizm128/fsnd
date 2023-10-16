@@ -77,33 +77,287 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 
 
-## Review Comment to the Students
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
+## API Documentation
 
-Endpoints
-GET '/api/v1.0/categories'
-GET ...
-POST ...
-DELETE ...
 
-GET '/api/v1.0/categories'
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
-{'1' : "Science",
-'2' : "Art",
-'3' : "Geography",
-'4' : "History",
-'5' : "Entertainment",
-'6' : "Sports"}
+`GET '/categories'`
 
-```
+* Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+
+* **Request Arguments:** None
+
+* **Returns:** An object with a single key, categories, that contains an object of id: category_string key: value pairs.
+
+    ```json
+    {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+    }
+    ```
+
+`GET '/questions'`
+
+TODO: Refine current_category
+
+* Fetches a dictionary that includes all the questions and categories.  Results are paginated.
+
+* **Request Arguments:**
+    - `page` (int)
+
+* **Returns:** A list of categories, a list of questions, the total number of questions.
+
+    ```json
+    {
+        "categories": [
+            {
+                "id": 1,
+                "type": "Science"
+            },
+            {
+                "id": 2,
+                "type": "Art"
+            },
+            {
+                "id": 3,
+                "type": "Geography"
+            },
+            {
+                "id": 4,
+                "type": "History"
+            },
+            {
+                "id": 5,
+                "type": "Entertainment"
+            },
+            {
+                "id": 6,
+                "type": "Sports"
+            }
+        ],
+        "code": "200",
+        "message": "OK",
+        "questions": [
+            {
+                "answer": "Apollo 13",
+                "category": 5,
+                "difficulty": 4,
+                "id": 2,
+                "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+            },
+            {
+                "answer": "Maya Angelou",
+                "category": 4,
+                "difficulty": 2,
+                "id": 5,
+                "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+            },
+
+            ...
+
+            {
+                "answer": "Agra",
+                "category": 3,
+                "difficulty": 2,
+                "id": 15,
+                "question": "The Taj Mahal is located in which Indian city?"
+            }
+        ],
+        "success": true,
+        "total_questions": 10
+    }
+    ```
+
+`DELETE '/questions/<int:question_id>'`
+
+* Deletes a question using the question ID. 
+  
+* **Request Arguments:** 
+  - `question_id`(int)
+  - `page` (int)
+
+* **Returns:** A list of categories, a list of questions, the total number of questions.
+
+
+    ```json
+    {
+        'code': '200',
+        'deleted': 2,
+        'message': 'OK',
+        'questions': [{'answer': 'Muhammad Ali',
+                    'category': 4,
+                    'difficulty': 1,
+                    'id': 9,
+                    'question': "What boxer's original name is Cassius Clay?"},
+                    {'answer': 'Brazil',
+                    'category': 6,
+                    'difficulty': 3,
+                    'id': 10,
+                    'question': 'Which is the only team to play in every soccer '
+                                'World Cup tournament?'},
+
+                        ...
+
+                    {'answer': 'One',
+                    'category': 2,
+                    'difficulty': 4,
+                    'id': 18,
+                    'question': 'How many paintings did Van Gogh sell in his '
+                                'lifetime?'}],
+        'success': True,
+        'total_questions': 10
+    }
+    ```
+  
+
+
+`POST '/questions'`
+
+* Create an endpoint to POST a new question.
+
+* **Request Arguments:** Requires the question and answer text, 
+category, and difficulty score.
+
+    ```json
+    {
+    'question': 'What is the heaviest organ in the human body?'
+    'answer': 'The Liver'
+    'category': 1
+    'difficulty': 4
+    }
+    ```
+* **Returns:** A list of categories, a list of questions, the total number of 
+questions.
+
+    ```json
+    {
+    'code': '200',
+    'created': 24,
+    'message': 'OK',
+    'questions': [{'answer': 'Apollo 13',
+                    'category': 5,
+                    'difficulty': 4,
+                    'id': 2,
+                    'question': 'What movie earned Tom Hanks his third straight '
+                                'Oscar nomination, in 1996?'},
+                    {'answer': 'Tom Cruise',
+                    'category': 5,
+                    'difficulty': 4,
+                    'id': 4,
+                    'question': 'What actor did author Anne Rice first denounce, '
+                                'then praise in the role of her beloved Lestat?'},
+
+                    ...
+
+                    {'answer': 'The Palace of Versailles',
+                    'category': 3,
+                    'difficulty': 3,
+                    'id': 14,
+                    'question': 'In which royal palace would you find the Hall of '
+                                'Mirrors?'}],
+    'success': True,
+    'total_questions': 10
+    }
+    ```
+
+`POST '/api/v1.0/search'`
+
+* Searches questions based on a search term. Results return N questions that
+ contain the search term. 
+
+* **Request Arguments:** 
+  - `searchTerm` (str)
+  - `page` (int)
+
+* **Returns:** A list of categories, a list of questions, the total number of 
+questions.
+
+    ```json
+    {
+    'code': '200',
+    'message': 'OK',
+    'questions': [{'answer': 'Agra',
+                    'category': 3,
+                    'difficulty': 2,
+                    'id': 15,
+                    'question': 'The Taj Mahal is located in which Indian city?'}],
+    'success': True,
+    'total_questions': 1
+    }
+    ```
+
+`GET '/categories/<int:category_id>/questions'`
+      
+* Gets questions based on category. 
+
+* **Request Arguments:** 
+  - `question_id`(int)
+
+* **Returns:** A list of categories, a list of questions, the total number of questions.
+
+    ```json
+    {
+    'code': '200',
+    'message': 'OK',
+    'questions': [{'answer': 'The Liver',
+                    'category': 1,
+                    'difficulty': 4,
+                    'id': 20,
+                    'question': 'What is the heaviest organ in the human body?'},
+                    {'answer': 'Alexander Fleming',
+                    'category': 1,
+                    'difficulty': 3,
+                    'id': 21,
+                    'question': 'Who discovered penicillin?'},
+                    {'answer': 'Blood',
+                    'category': 1,
+                    'difficulty': 4,
+                    'id': 22,
+                    'question': 'Hematology is a branch of medicine involving the '
+                                'study of what?'}],
+    'success': True,
+    'total_questions': 3
+    }
+    ```
+
+`POST '/quizzes'`
+
+* Get questions to play the quiz. The endpoint should take category and previous 
+question parameters and return a random questions within the given category, 
+if provided, and that is not one of the previous questions. 
+
+* **Request Arguments:** 
+  - `category` (int)
+  - `previous_questions` (list)
+
+* **Returns:** A list of categories, a list of questions, the total number of questions.
+
+    ```json
+    {
+    "code": "200", 
+    "message": "OK", 
+    "question": {
+        "answer": "Blood", 
+        "category": 1, 
+        "difficulty": 4, 
+        "id": 22, 
+        "question": "Hematology is a branch of medicine involving the study of what?"
+    }, 
+    "success": true
+    }
+    ```
+
+* Example: `curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [20], "category": 1}' http://127.0.0.1:5000/quizzes`
 
 
 ## Testing
+
 To run the tests, run
-```
+
+```bash
 dropdb trivia_test
 createdb trivia_test
 psql trivia_test < trivia.psql

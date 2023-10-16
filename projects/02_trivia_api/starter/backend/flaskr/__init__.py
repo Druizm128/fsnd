@@ -36,16 +36,19 @@ def create_app(test_config=None):
   @app.route('/categories')
   def get_categories():
     categories = Category.query.all()
-    format_categories = [category.format() for category in categories]
+    #format_categories = [category.format() for category in categories]
+    categories_dict = {}
+    for category in categories:
+      categories_dict[category.id] = category.type
 
-    if len(format_categories) == 0:
+    if len(categories_dict) == 0:
       abort(404)
 
     return jsonify({
       'message': 'OK', 
       'code': '200', 
-      'categories': format_categories,
-      'total_categories': len(format_categories)
+      'categories': categories_dict,
+      'total_categories': len(categories_dict)
     })
 
   '''
@@ -80,14 +83,18 @@ def create_app(test_config=None):
       abort(404)
 
     categories = Category.query.all()
-    format_categories = [category.format() for category in categories]
+    #format_categories = [category.format() for category in categories]
+    categories_dict = {}
+    for category in categories:
+      categories_dict[category.id] = category.type
 
     return jsonify({
+      'success': True,
       'message': 'OK', 
       'code': '200', 
       'questions': current_questions,
       'total_questions': len(current_questions),
-      'categories': format_categories
+      'categories': categories_dict
     })
 
   '''
@@ -114,6 +121,7 @@ def create_app(test_config=None):
       selection = Question.query.order_by(Question.id).all()
       current_questions = paginate_questions(request, selection)
       return jsonify({
+        'success': True,
         'message': 'OK', 
         'code': '200',
         'deleted': question_id,
@@ -156,8 +164,9 @@ def create_app(test_config=None):
       current_questions = paginate_questions(request, selection)
 
       return jsonify({
+        'success': True,
         'message': 'OK',
-        'code': 200,
+        'code': '200',
         'created': question.id,
         'questions': current_questions,
         'total_questions': len(current_questions)
@@ -177,30 +186,31 @@ def create_app(test_config=None):
   '''
   @app.route('/questions/search', methods=['POST'])
   def search_questions():
-    try:
-      body = request.get_json()
-      search = body.get('search', '')
+    body = request.get_json()
+    search = body.get('search', '')
 
-      selection = (
-        Question
-          .query
-          .filter(
-            Question
-              .question
-              .ilike(f'%{search}%'))
-              .all()
-      )
-      current_questions = paginate_questions(request, selection)
+    selection = (
+      Question
+        .query
+        .filter(
+          Question
+            .question
+            .ilike(f'%{search}%'))
+            .all()
+    )
+    current_questions = paginate_questions(request, selection)
 
-      
-      return jsonify({
-        'message': 'OK', 
-        'code': '200',
-        'questions': current_questions,
-        'total_questions': len(current_questions)
-      })
-    except:
+    if len(current_questions) == 0:
       abort(404)
+    
+    return jsonify({
+      'success': True,
+      'message': 'OK', 
+      'code': '200',
+      'questions': current_questions,
+      'total_questions': len(current_questions)
+    })
+      
 
   '''
   @TODO: 
@@ -210,7 +220,21 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that 
   category to be shown. 
   '''
+  @app.route('/categories/<int:category_id>/questions')
+  def get_questions_by_category(category_id):
+    selection = Question.query.filter(Question.category == category_id).all()
+    current_questions = paginate_questions(request, selection)
 
+    if len(current_questions) == 0:
+      abort(404)
+
+    return jsonify({
+      'success': True,
+      'message': 'OK', 
+      'code': '200', 
+      'questions': current_questions,
+      'total_questions': len(current_questions)
+    })
 
   '''
   @TODO: 
@@ -223,10 +247,71 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
+  @app.route('/quizzes', methods=['POST'])
+  def get_quiz_question():
+    data = request.get_json()
+    print(data)
+    category = data.get('category')
+    previous_questions = data.get('previous_questions')
+    questions = Question.query.filter_by(category=category).all()
+
+    random_question = random.choice(
+      [question.format() for question in questions if question.id not in previous_questions]
+    )
+
+    return jsonify({
+      'success': True,
+      'message': 'OK', 
+      'code': '200', 
+      'question': random_question
+    })
+  
 
   '''
   @TODO: 
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
+  @app.errorhandler(400)
+  def bad_request(error):
+    return jsonify({
+      "success": False, 
+      "error": 400,
+      "message": "bad request"
+      }), 400
+
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      "success": False, 
+      "error": 404,
+      "message": "resource not found"
+      }), 404
+  
+  @app.errorhandler(405)
+  def method_not_allowed(error):
+    return jsonify({
+      "success": False, 
+      "error": 405,
+      "message": "method not allowed"
+      }), 405
+
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+      "success": False, 
+      "error": 422,
+      "message": "unprocessable"
+      }), 422
+
+  return app
+
+  @app.errorhandler(500)
+  def internal_server_error(error):
+    return jsonify({
+      "success": False, 
+      "error": 500,
+      "message": "internal server error"
+      }), 500
+
   return app
