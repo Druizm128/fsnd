@@ -36,11 +36,11 @@ def create_app(test_config=None):
   @app.route('/categories')
   def get_categories():
     categories = Category.query.all()
-    #format_categories = [category.format() for category in categories]
+    format_categories = [category.format() for category in categories]
     categories_dict = {}
     for category in categories:
       categories_dict[category.id] = category.type
-
+    # categories_dict = format_categories
     if len(categories_dict) == 0:
       abort(404)
 
@@ -94,7 +94,8 @@ def create_app(test_config=None):
       'code': '200', 
       'questions': current_questions,
       'total_questions': len(current_questions),
-      'categories': categories_dict
+      'categories': categories_dict,
+      'currentCategory': 'History'
     })
 
   '''
@@ -126,7 +127,8 @@ def create_app(test_config=None):
         'code': '200',
         'deleted': question_id,
         'questions': current_questions,
-        'total_questions': len(current_questions)
+        'total_questions': len(current_questions),
+        'currentCategory': 'History'
       })
     
     except:
@@ -187,7 +189,7 @@ def create_app(test_config=None):
   @app.route('/questions/search', methods=['POST'])
   def search_questions():
     body = request.get_json()
-    search = body.get('search', '')
+    search = body.get('searchTerm', '')
 
     selection = (
       Question
@@ -233,7 +235,8 @@ def create_app(test_config=None):
       'message': 'OK', 
       'code': '200', 
       'questions': current_questions,
-      'total_questions': len(current_questions)
+      'total_questions': len(current_questions),
+      'currentCategory': 'History'
     })
 
   '''
@@ -251,8 +254,11 @@ def create_app(test_config=None):
   def get_quiz_question():
     data = request.get_json()
     print(data)
-    category = data.get('category')
+    category = data.get('quiz_category')
     previous_questions = data.get('previous_questions')
+    print("Inputs")
+    print(category)
+    print(previous_questions)
     questions = Question.query.filter_by(category=category).all()
 
     random_question = random.choice(
