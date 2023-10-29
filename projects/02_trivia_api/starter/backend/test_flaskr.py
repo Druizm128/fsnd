@@ -40,18 +40,22 @@ class TriviaTestCase(unittest.TestCase):
     def test_paginate_questions(self):
         res = self.client().get("/questions")
         data = json.loads(res.data)
-        print(data)
+        #print(data)
         self.assertEqual(res.status_code, 200)
 
+    def test_get_categories(self):
+        res = self.client().get("/categories")
+        data = json.loads(res.data)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['message'], 'OK')
+        self.assertEqual(data['code'], '200')
 
-    # def test_get_categories(self):
-    #     return jsonify({
-    #     'message': 'OK', 
-    #     'code': '200', 
-    #     'categories': format_categories,
-    #     'total_categories': len(format_categories)
-    #     })
-
+    def test_error_get_categories(self):
+        res = self.client().get("/categories/99")
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "resource not found")
 
     def test_get_questions(self):
         res = self.client().get("/questions")
@@ -74,7 +78,7 @@ class TriviaTestCase(unittest.TestCase):
     def test_delete_question(self):
         res = self.client().delete('/questions/2')
         data = json.loads(res.data)
-        pprint.pprint(data)
+        #pprint.pprint(data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['message'], 'OK')
@@ -98,7 +102,7 @@ class TriviaTestCase(unittest.TestCase):
         }
         res = self.client().post('/questions', json=new_question)
         data = json.loads(res.data)
-        pprint.pprint(data)
+        #pprint.pprint(data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['message'], 'OK')
@@ -121,7 +125,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_search_questions(self):
         search_term = {
-            'search': 'Taj'
+            'searchTerm': 'Taj'
         }
         res = self.client().post('/questions/search', json=search_term)
         data = json.loads(res.data)
@@ -134,10 +138,11 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_error_search_questions(self):
         search_term = {
-            'search': 'Dante'
+            'searchTerm': 'Dante'
         }
         res = self.client().post('/questions/search', json=search_term)
         data = json.loads(res.data)
+        #pprint.pprint(data)
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
@@ -163,24 +168,32 @@ class TriviaTestCase(unittest.TestCase):
     def test_get_quiz_question(self):
         data = {
             'previous_questions': [1, 2, 3, 4, 5],
-            'category': 1
+            'quiz_category': {'type': 'Science', 'id': '1'}
         }
         res = self.client().post('/quizzes', json=data)
         data = json.loads(res.data)
-        #pprint.pprint(data)
+        pprint.pprint(data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['message'], 'OK')
         self.assertEqual(data['code'], '200')
         self.assertIsNotNone(data['question'])
-        random_question = data['question']
-        print(random_question)
-        return jsonify({
-        'message': 'OK', 
-        'code': '200', 
-        'question': random_question
-        })
 
+    def test_error_get_quiz_question(self):
+        data = {
+            'previous_questions': [
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
+                11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
+                21, 22, 23, 24, 25, 26, 27, 28, 29, 30
+            ],
+            'quiz_category': {'type': 'AI', 'id': '99'}
+        }
+        res = self.client().post('/quizzes', json=data)
+        data = json.loads(res.data)
+        #pprint.pprint(data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

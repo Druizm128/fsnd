@@ -3,7 +3,6 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
-
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
@@ -45,6 +44,7 @@ def create_app(test_config=None):
       abort(404)
 
     return jsonify({
+      'success': True,
       'message': 'OK', 
       'code': '200', 
       'categories': categories_dict,
@@ -253,17 +253,40 @@ def create_app(test_config=None):
   @app.route('/quizzes', methods=['POST'])
   def get_quiz_question():
     data = request.get_json()
-    print(data)
     category = data.get('quiz_category')
     previous_questions = data.get('previous_questions')
-    print("Inputs")
-    print(category)
-    print(previous_questions)
-    questions = Question.query.filter_by(category=category).all()
+    # print("Inputs")
+    # print(category)
+    # print("Previous Questions")
+    # print(previous_questions)
+    # print("Questions")
+    questions = None
 
+    if category['id'] == 0:
+      questions = (
+        Question
+          .query
+          .filter(Question.id.notin_(previous_questions))
+          .all()
+      )
+    else:
+      questions = (
+        Question
+          .query
+          .filter_by(category=category['id'])
+          .filter(Question.id.notin_(previous_questions))
+          .all()
+      )
+
+    if len(questions) == 0:
+      abort(404)
+
+    # print(questions)
+    # print("Random Question")
     random_question = random.choice(
-      [question.format() for question in questions if question.id not in previous_questions]
+      [question.format() for question in questions]
     )
+    # print(random_question)
 
     return jsonify({
       'success': True,
