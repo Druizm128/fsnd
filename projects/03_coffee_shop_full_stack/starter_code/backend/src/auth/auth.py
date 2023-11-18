@@ -8,7 +8,7 @@ from flask import abort
 
 AUTH0_DOMAIN = 'dev-sb77a73zt8gdfljm.us.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'dev' # https://localhost:5000
+API_AUDIENCE = 'https://localhost:5000'
 
 ## AuthError Exception
 '''
@@ -34,13 +34,14 @@ class AuthError(Exception):
 
 def get_token_auth_header():
     auth = request.headers.get('Authorization', None)
-    if auth == None:
+    if not auth:
         raise AuthError({
             'code': 'authorization_header_missing',
             'description': 'Authorization header is expected.'
         }, 401)
 
     parts = auth.split()
+
     if parts[0].lower() != 'bearer':
         raise AuthError({
             'code': 'invalid_header',
@@ -74,25 +75,23 @@ def get_token_auth_header():
     return true otherwise
 '''
 def check_permissions(permission, payload):
-    if 'permissions' not in payload:
-        raise AuthError({
-            'code': 'invalid_claims',
-            'description': 'Permissions not included in JWT.'
-        }, 400)
-
-    if permission not in payload['permissions']:
-        raise AuthError({
-            'code': '403',
-            'description': 'Permission not found.'
-        }, 403) 
-    
-    if 'exp' not in payload:
-        raise AuthError({
-            'code': '400',
-            'description': 'Expiration date not included in JWT.'
-        }, 400) 
-    
-    return True 
+    print(payload)
+    if payload.get('permissions'):
+        token_scopes = payload.get("permissions")
+        if (permission not in token_scopes):
+            raise AuthError(
+                {
+                    'code': 'invalid_permissions',
+                    'description': 'User does not have enough privileges'
+                }, 401)
+        else:
+            return True
+    else:
+        raise AuthError(
+            {
+                'code': 'invalid_permissions',
+                'description': 'User does not have any roles attached'
+            }, 401)
 
 '''
 @TODO implement verify_decode_jwt(token) method
