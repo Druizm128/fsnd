@@ -252,14 +252,10 @@ def create_app(test_config=None):
   '''
   @app.route('/quizzes', methods=['POST'])
   def get_quiz_question():
-    data = request.get_json()
-    category = data.get('quiz_category')
-    previous_questions = data.get('previous_questions')
-    # print("Inputs")
-    # print(category)
-    # print("Previous Questions")
-    # print(previous_questions)
-    # print("Questions")
+    body = request.get_json()
+    category = body.get('quiz_category', None)
+    previous_questions = body.get('previous_questions', None)
+
     questions = None
 
     if category['id'] == 0:
@@ -279,22 +275,30 @@ def create_app(test_config=None):
       )
 
     if len(questions) == 0:
-      abort(404)
+        return jsonify({
+            'question': None
+        })
 
-    # print(questions)
-    # print("Random Question")
-    random_question = random.choice(
-      [question.format() for question in questions]
-    )
-    # print(random_question)
+    subset = [question.format() for question in questions if question.id not in previous_questions]
 
-    return jsonify({
-      'success': True,
-      'message': 'OK', 
-      'code': '200', 
-      'question': random_question
-    })
-  
+    if len(subset) == 0:
+        random_question = None
+    else:
+        random_question = random.choice(subset)
+
+    try:
+        while len(subset) > len(previous_questions):
+            if random_question.get(id) not in previous_questions:
+                return jsonify({
+                    'success': True,
+                    'question': random_question
+                }), 200
+        return jsonify({
+            'success': True,
+            'question': random_question
+        }), 200
+    except:
+        abort(404)
 
   '''
   @TODO: 
