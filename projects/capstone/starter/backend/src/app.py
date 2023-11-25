@@ -168,6 +168,39 @@ def update_movie(jwt, id):
     except:
         abort(422)
 
+'''
+----------------------------- ERROR HANDLING ----------------------------------
+'''
+
+
+@app.errorhandler(400)
+def bad_request(error):
+    '''implement error handler for 400'''
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": "bad request"
+    }), 400
+
+
+@app.errorhandler(404)
+def not_found(error):
+    '''implement error handler for 404'''
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "resource not found"
+    }), 404
+
+
+# @app.errorhandler(AuthError)
+# def auth_error(error):
+#     '''implement AuthError'''
+#     return jsonify({
+#         "success": False,
+#         "error": error.status_code,
+#         "message": error.error['description']
+#     }), error.status_code
 
 if __name__ == '__main__':
-    APP.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
