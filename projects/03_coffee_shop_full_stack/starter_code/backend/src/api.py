@@ -47,7 +47,7 @@ def get_drinks():
 '''
 @app.route('/drinks-detail')
 @requires_auth('get:drinks-detail')
-def get_drinks_detail(payload):
+def get_drinks_detail(jwt):
     drinks = Drink.query.all()
     return jsonify({
         'success': True,
@@ -67,7 +67,7 @@ def get_drinks_detail(payload):
 '''
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
-def create_drink(payload):
+def create_drink(jwt):
     body = request.get_json()
     title = body.get('title', None)
     recipe = body.get('recipe', None)
@@ -96,7 +96,7 @@ def create_drink(payload):
 '''
 @app.route('/drinks/<int:id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
-def update_drink(payload, id):
+def update_drink(jwt, id):
     drink = Drink.query.filter(Drink.id == id).one_or_none()
 
     if not drink:
@@ -130,7 +130,7 @@ def update_drink(payload, id):
 '''
 @app.route('/drinks/<int:id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
-def delete_drink(payload, id):
+def delete_drink(jwt, id):
     drink = Drink.query.filter(Drink.id == id).one_or_none()
 
     if not drink:
