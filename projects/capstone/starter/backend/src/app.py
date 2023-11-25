@@ -11,10 +11,10 @@ def create_app(test_config=None):
 
   return app
 
-APP = create_app()
+app = create_app()
 
 # initialize the datbase
-setup_db(APP)
+setup_db(app)
 
 '''
 -------------------------- ENDPOINTS ------------------------------------------
@@ -40,6 +40,42 @@ def get_movies(jwt):
     }), 200
 
 # DELETE /actors/ and /movies/
+@app.route('/actors/<int:id>', methods=['DELETE'])
+#@requires_auth('delete:actors')
+def delete_actor(jwt, id):
+    actor = Actor.query.filter(Actor.id == id).one_or_none()
+
+    if not actor:
+        abort(404)
+
+    try:
+        actor.delete()
+
+        return jsonify({
+            'success': True,
+            'delete': id
+        }), 200
+    except:
+        abort(422)
+
+@app.route('/movies/<int:id>', methods=['DELETE'])
+#@requires_auth('delete:movies')
+def delete_movie(jwt, id):
+    movie = Movie.query.filter(Movie.id == id).one_or_none()
+
+    if not movie:
+        abort(404)
+
+    try:
+        movie.delete()
+
+        return jsonify({
+            'success': True,
+            'delete': id
+        }), 200
+    except:
+        abort(422)
+
 
 # POST /actors and /movies and
 @app.route('/actors', methods=['POST'])
@@ -63,7 +99,7 @@ def create_actor(jwt):
 
 @app.route('/movies', methods=['POST'])
 #@requires_auth('post:movies')
-def create_actor(jwt):
+def create_movie(jwt):
     body = request.get_json()
     title = body.get('title', None)
     release_date = body.get('relase_date', None)
@@ -80,8 +116,57 @@ def create_actor(jwt):
         abort(422)
 
 # PATCH /actors/ and /movies/
+@app.route('/actors/<int:id>', methods=['PATCH'])
+#@requires_auth('patch:actors')
+def update_actor(jwt, id):
+    actor = Actor.query.filter(Actor.id == id).one_or_none()
 
+    if not actor:
+        abort(404)
 
+    body = request.get_json()
+    name = body.get('name', None)
+    age = body.get('age', None)
+    gender = body.get('gender', None)
+
+    try:
+        actor.name = name
+        actor.age = age
+        actor.gender = gender
+
+        actor.update()
+
+        return jsonify({
+            'success': True,
+            'actor': [actor.format()]
+        }), 200
+    except:
+        abort(422)
+
+@app.route('/movies/<int:id>', methods=['PATCH'])
+#@requires_auth('patch:movies')
+def update_movie(jwt, id):
+    movie = Movie.query.filter(Movie.id == id).one_or_none()
+
+    if not movie:
+        abort(404)
+
+    body = request.get_json()
+    title = body.get('title', None)
+    release_date = body.get('relase_date', None)
+
+    try:
+        movie.title = title
+        movie.release_date = release_date
+
+        movie.update()
+
+        return jsonify({
+            'success': True,
+            'movie': [movie.format()]
+        }), 200
+    except:
+        abort(422)
 
 
 if __name__ == '__main__':
