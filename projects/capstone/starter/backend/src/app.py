@@ -23,16 +23,16 @@ setup_db(app)
 # GET /actors and /movies
 @app.route('/actors')
 #@requires_auth('get:actors')
-def get_actors(jwt):
+def get_actors():
     actors = Actor.query.all()
     return jsonify({
         'success': True,
-        'drinks': [actors.format() for actors in actors]
+        'actors': [actors.format() for actors in actors]
     }), 200
 
 @app.route('/movies')
 #@requires_auth('get:movies')
-def get_movies(jwt):
+def get_movies():
     movies = Movie.query.all()
     return jsonify({
         'success': True,
@@ -42,7 +42,7 @@ def get_movies(jwt):
 # DELETE /actors/ and /movies/
 @app.route('/actors/<int:id>', methods=['DELETE'])
 #@requires_auth('delete:actors')
-def delete_actor(jwt, id):
+def delete_actor(id):
     actor = Actor.query.filter(Actor.id == id).one_or_none()
 
     if not actor:
@@ -60,7 +60,7 @@ def delete_actor(jwt, id):
 
 @app.route('/movies/<int:id>', methods=['DELETE'])
 #@requires_auth('delete:movies')
-def delete_movie(jwt, id):
+def delete_movie(id):
     movie = Movie.query.filter(Movie.id == id).one_or_none()
 
     if not movie:
@@ -80,7 +80,7 @@ def delete_movie(jwt, id):
 # POST /actors and /movies and
 @app.route('/actors', methods=['POST'])
 #@requires_auth('post:actors')
-def create_actor(jwt):
+def create_actor():
     body = request.get_json()
     name = body.get('name', None)
     age = body.get('age', None)
@@ -99,10 +99,11 @@ def create_actor(jwt):
 
 @app.route('/movies', methods=['POST'])
 #@requires_auth('post:movies')
-def create_movie(jwt):
+def create_movie():
     body = request.get_json()
+    print(body)
     title = body.get('title', None)
-    release_date = body.get('relase_date', None)
+    release_date = body.get('release_date', None)
 
     try:
         movie = Movie(title=title, release_date=release_date)
@@ -118,7 +119,7 @@ def create_movie(jwt):
 # PATCH /actors/ and /movies/
 @app.route('/actors/<int:id>', methods=['PATCH'])
 #@requires_auth('patch:actors')
-def update_actor(jwt, id):
+def update_actor(id):
     actor = Actor.query.filter(Actor.id == id).one_or_none()
 
     if not actor:
@@ -145,15 +146,16 @@ def update_actor(jwt, id):
 
 @app.route('/movies/<int:id>', methods=['PATCH'])
 #@requires_auth('patch:movies')
-def update_movie(jwt, id):
+def update_movie(id):
     movie = Movie.query.filter(Movie.id == id).one_or_none()
 
     if not movie:
         abort(404)
 
     body = request.get_json()
+    print(f"body: {body}")
     title = body.get('title', None)
-    release_date = body.get('relase_date', None)
+    release_date = body.get('release_date', None)
 
     try:
         movie.title = title
