@@ -3,18 +3,21 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import setup_db, Movie, Actor
+from auth import AuthError, requires_auth
+
 
 def create_app(test_config=None):
-  # create and configure the app
-  app = Flask(__name__)
-  CORS(app)
+    # create and configure the app
+    app = Flask(__name__)
+    CORS(app)
 
-  return app
+    with app.app_context():
+        setup_db(app)
+
+    return app
 
 app = create_app()
 
-# initialize the datbase
-setup_db(app)
 
 '''
 -------------------------- ENDPOINTS ------------------------------------------
@@ -22,8 +25,8 @@ setup_db(app)
 
 # GET /actors and /movies
 @app.route('/actors')
-#@requires_auth('get:actors')
-def get_actors():
+@requires_auth('get:actors')
+def get_actors(jwt):
     actors = Actor.query.all()
     return jsonify({
         'success': True,
@@ -31,8 +34,8 @@ def get_actors():
     }), 200
 
 @app.route('/movies')
-#@requires_auth('get:movies')
-def get_movies():
+@requires_auth('get:movies')
+def get_movies(jwt):
     movies = Movie.query.all()
     return jsonify({
         'success': True,
@@ -41,8 +44,8 @@ def get_movies():
 
 # DELETE /actors/ and /movies/
 @app.route('/actors/<int:id>', methods=['DELETE'])
-#@requires_auth('delete:actors')
-def delete_actor(id):
+@requires_auth('delete:actors')
+def delete_actor(jwt, id):
     actor = Actor.query.filter(Actor.id == id).one_or_none()
 
     if not actor:
@@ -59,8 +62,8 @@ def delete_actor(id):
         abort(422)
 
 @app.route('/movies/<int:id>', methods=['DELETE'])
-#@requires_auth('delete:movies')
-def delete_movie(id):
+@requires_auth('delete:movies')
+def delete_movie(jwt, id):
     movie = Movie.query.filter(Movie.id == id).one_or_none()
 
     if not movie:
@@ -79,8 +82,8 @@ def delete_movie(id):
 
 # POST /actors and /movies and
 @app.route('/actors', methods=['POST'])
-#@requires_auth('post:actors')
-def create_actor():
+@requires_auth('post:actors')
+def create_actor(jwt):
     body = request.get_json()
     name = body.get('name', None)
     age = body.get('age', None)
@@ -98,8 +101,8 @@ def create_actor():
         abort(422)
 
 @app.route('/movies', methods=['POST'])
-#@requires_auth('post:movies')
-def create_movie():
+@requires_auth('post:movies')
+def create_movie(jwt):
     body = request.get_json()
     print(body)
     title = body.get('title', None)
@@ -118,8 +121,8 @@ def create_movie():
 
 # PATCH /actors/ and /movies/
 @app.route('/actors/<int:id>', methods=['PATCH'])
-#@requires_auth('patch:actors')
-def update_actor(id):
+@requires_auth('patch:actors')
+def update_actor(jwt, id):
     actor = Actor.query.filter(Actor.id == id).one_or_none()
 
     if not actor:
@@ -145,8 +148,8 @@ def update_actor(id):
         abort(422)
 
 @app.route('/movies/<int:id>', methods=['PATCH'])
-#@requires_auth('patch:movies')
-def update_movie(id):
+@requires_auth('patch:movies')
+def update_movie(jwt, id):
     movie = Movie.query.filter(Movie.id == id).one_or_none()
 
     if not movie:
@@ -195,14 +198,14 @@ def not_found(error):
     }), 404
 
 
-# @app.errorhandler(AuthError)
-# def auth_error(error):
-#     '''implement AuthError'''
-#     return jsonify({
-#         "success": False,
-#         "error": error.status_code,
-#         "message": error.error['description']
-#     }), error.status_code
+@app.errorhandler(AuthError)
+def auth_error(error):
+    '''implement AuthError'''
+    return jsonify({
+        "success": False,
+        "error": error.status_code,
+        "message": error.error['description']
+    }), error.status_code
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)

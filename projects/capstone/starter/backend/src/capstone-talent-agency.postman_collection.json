@@ -11,24 +11,50 @@
 			"item": [
 				{
 					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"The Incredible Hulk\",\n    \"release_date\": \"2008\"\n}",
+							"raw": "{\n    \"title\": \"The Incredible Hulk\",\n    \"release_date\": 2008\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:5000/movies"
+						"url": "{{host}}/movies"
 					},
 					"response": []
 				},
 				{
 					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -41,29 +67,84 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:5000/actors"
+						"url": "{{host}}/actors"
 					},
 					"response": []
 				},
 				{
 					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movies).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": "{{host}}/movies"
 					},
 					"response": []
 				},
 				{
 					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actors).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://127.0.0.1:5000/actors"
+						"url": "{{host}}/actors"
 					},
 					"response": []
 				},
 				{
 					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains movie array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movie).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PATCH",
 						"header": [],
@@ -76,12 +157,30 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:5000/movies/1"
+						"url": "{{host}}/movies/1"
 					},
 					"response": []
 				},
 				{
 					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains actor array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actor).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PATCH",
 						"header": [],
@@ -94,27 +193,79 @@
 								}
 							}
 						},
-						"url": "http://127.0.0.1:5000/actors/1"
+						"url": "{{host}}/actors/1"
 					},
 					"response": []
 				},
 				{
 					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "http://127.0.0.1:5000/movies/1"
+						"url": "{{host}}/movies/1"
 					},
 					"response": []
 				},
 				{
 					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "http://127.0.0.1:5000/actors/1"
+						"url": "{{host}}/actors/1"
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": {
+					"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlVZVFdtMW5UcVhLU045WFktZlpOVSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zYjc3YTczenQ4Z2RmbGptLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NTNmMTA2MmVlNGJmNGE4OTYwZmU0NGEiLCJhdWQiOiJ0YWxlbnQtbWFuYWdlbWVudC1hZ2VuY3kiLCJpYXQiOjE3MDE1NDM3NDcsImV4cCI6MTcwMTU1MDk0NywiYXpwIjoiRDZmTzF6ejRzcm9EV0xsMDV6VXpwVVFVSmlxcDh3WXoiLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3Q6bW92aWVzIl19.kWCu8vPHWuYtSlH4hNaUXO6fvlBLBNDZPBWCrG54Oq0Zwx--HyRwC6Vfoh0woH3sVIS6oPF_OMzSbkLSVB9cT2Rxuw10Iev00GLFUyxW7f3_7tzuxkwWvyQ8TMTHwHnNp-aqhSrjO-ADJkzSNNFBTNPG34Yx_6LZoWWW3yqSDCk6aj_RfmPNPQYdLyEngaDsypqgMvga3umJxJEYo3mZn3qIpDhC1LTOtmfcitL580zjvjE5UM2lxyLcn58JG-jHrTIe9GUI3c0okhghV0eYl2VGD36GWmeUKm_eSD5MjHG2ylKg4hsLPGb3jS7lNwD8eU4qAVJgrzv7x1ciWwwinA"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -123,83 +274,208 @@
 			"item": [
 				{
 					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Robert Downey Jr.\",\n    \"age\": \"58\",\n    \"gender\": \"M\"\n}",
+							"raw": "{\n    \"name\": \"Mark Ruffalo\",\n    \"age\": \"56\",\n    \"gender\": \"M\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:5000/actors"
+						"url": "{{host}}/actors"
 					},
 					"response": []
 				},
 				{
 					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actors).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://127.0.0.1:5000/actors"
+						"url": "{{host}}/actors"
 					},
 					"response": []
 				},
 				{
 					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movies).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": "{{host}}/movies"
 					},
 					"response": []
 				},
 				{
 					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains actor array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actor).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Robert Downey Jr. (The One and Only)\",\n    \"age\": \"58\",\n    \"gender\": \"M\"\n}",
+							"raw": "{\n    \"name\": \"Mark Ruffalo (The One and Only)\",\n    \"age\": \"56\",\n    \"gender\": \"M\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:5000/actors/1"
+						"url": "{{host}}/actors/2"
 					},
 					"response": []
 				},
 				{
 					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains movie array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movie).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"The Incredible Hulk (Marvel)\",\n    \"release_date\": \"2008\"\n}",
+							"raw": "{\n    \"title\": \"The Incredible Hulk (Marvel) (The best movie)\",\n    \"release_date\": \"2008\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://127.0.0.1:5000/movies/1"
+						"url": "{{host}}/movies/1"
 					},
 					"response": []
 				},
 				{
 					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "http://127.0.0.1:5000/actors/1"
+						"url": "{{host}}/actors/2"
 					},
 					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": {
+					"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlVZVFdtMW5UcVhLU045WFktZlpOVSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zYjc3YTczenQ4Z2RmbGptLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NTNmMTA2MmVlNGJmNGE4OTYwZmU0NGEiLCJhdWQiOiJ0YWxlbnQtbWFuYWdlbWVudC1hZ2VuY3kiLCJpYXQiOjE3MDE1NDM3NDcsImV4cCI6MTcwMTU1MDk0NywiYXpwIjoiRDZmTzF6ejRzcm9EV0xsMDV6VXpwVVFVSmlxcDh3WXoiLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3Q6bW92aWVzIl19.kWCu8vPHWuYtSlH4hNaUXO6fvlBLBNDZPBWCrG54Oq0Zwx--HyRwC6Vfoh0woH3sVIS6oPF_OMzSbkLSVB9cT2Rxuw10Iev00GLFUyxW7f3_7tzuxkwWvyQ8TMTHwHnNp-aqhSrjO-ADJkzSNNFBTNPG34Yx_6LZoWWW3yqSDCk6aj_RfmPNPQYdLyEngaDsypqgMvga3umJxJEYo3mZn3qIpDhC1LTOtmfcitL580zjvjE5UM2lxyLcn58JG-jHrTIe9GUI3c0okhghV0eYl2VGD36GWmeUKm_eSD5MjHG2ylKg4hsLPGb3jS7lNwD8eU4qAVJgrzv7x1ciWwwinA"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -208,22 +484,112 @@
 			"item": [
 				{
 					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actors).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://127.0.0.1:5000/actors"
+						"url": "{{host}}/actors"
 					},
 					"response": []
 				},
 				{
 					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movies).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": "{{host}}/movies"
 					},
 					"response": []
 				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": {
+					"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlVZVFdtMW5UcVhLU045WFktZlpOVSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zYjc3YTczenQ4Z2RmbGptLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NTRmZTM5MDNlMDVkZDg5YTE1Njk5NWYiLCJhdWQiOiJ0YWxlbnQtbWFuYWdlbWVudC1hZ2VuY3kiLCJpYXQiOjE3MDE1NDM4NDgsImV4cCI6MTcwMTU1MTA0OCwiYXpwIjoiRDZmTzF6ejRzcm9EV0xsMDV6VXpwVVFVSmlxcDh3WXoiLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3Q6bW92aWVzIl19.hk2LBIZJ_3inKBhTv0XGZsPw_8GoKziMnkF9lhzFfnPUUmM-TpI8ehKphqIfZhbzOJ4xuHPbENLVJSJbDxMs3Z1tGXZEeu38i8SVo2e40VmsCLzANhYt5PrULzHyguWXjmHiZVRPVMX71UQc29rL2HY6yLc_GbVRrHcF-qbg-RtrKoDZjswb4kZ7K9RVCK_VaZJRh0s9senGsUuO8NnIDyBpG9IDOEMTSwRxXO8ktYZlngJ1IYHhHJTnpcZ-rbt-OYij8jy2GmJUiPYQJpSr7iJsmi_0Pc6lk5PbHGfYodW9TBJ7-lC2bpa8F1Nd5Zy3lGQJK5tjcIHGmn1JVxgEBg"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://127.0.0.1:5000",
+			"type": "string"
 		}
 	]
 }
