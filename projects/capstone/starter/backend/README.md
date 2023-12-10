@@ -16,3 +16,9 @@ FLASK_APP=app.py
 FLASK_DEBUG=true 
 flask run --reload
 ```
+
+# Test DB
+
+```
+createdb test_talentagency
+```
