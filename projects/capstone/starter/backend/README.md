@@ -1,29 +1,37 @@
-# Set up and Populate the Database
+# Talent Management Agency API.
 
+This project implements a REST API using Flask, PostgreSQL, Postman and Unittest to implement a talent management agency application. It also uses AuthO for user permissions and authentication. 
+
+The application has methods to maintain two tables, one for actors and another for movies.
+
+The methods are designed so user Producers can create movies and together with user Directors add, delete, update actors. It also implements methods so user Assistants can retrieve details from movies and actors.
+
+## Hosting
+
+The application is hosted in Render.
+
+URL: 
 ```
-createdb talentagency
-```
-
-
-```
-psql talentagency < talentagency.psql
-```
-
-# Run API
-
-```bash
-FLASK_APP=app.py 
-FLASK_DEBUG=true 
-flask run --reload
 ```
 
-# Test DB
+## Getting started
 
-```
-createdb test_talentagency
-```
+* Install Python verions `3.9`
 
-# API Documentation
+* Create virtual environment `.venv`
+
+* Install Python backend application dependencies in `requirments.txt`
+
+* Key dependency libraries:
+
+    - [Flask](https://flask.palletsprojects.com/en/3.0.x/)
+    - [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/)
+    - [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/)
+    - [python-jose](https://pypi.org/project/python-jose/)
+
+  Note: For further details, refer to the `requirements.txt`. 
+
+## API Documentation
 
 `GET '/actors`
 
@@ -249,3 +257,29 @@ createdb test_talentagency
         "success": true
     }
     ```
+
+## Local execution
+
+### Set up and Populate the Database
+
+```
+createdb talentagency
+```
+
+```
+psql talentagency < talentagency.psql
+```
+
+### Run API
+
+```bash
+FLASK_APP=app.py 
+FLASK_DEBUG=true 
+flask run --reload
+```
+
+### Test DB
+
+```
+createdb test_talentagency
+```
