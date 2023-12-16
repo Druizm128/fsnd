@@ -3,7 +3,7 @@ import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
 from app import create_app
-from models import setup_db, Movie, Actor
+from models import Movie, Actor, db
 from dotenv import load_dotenv
 
 # Unpack envrionment variables
@@ -13,33 +13,22 @@ CASTING_ASSISTANT = os.environ.get('CASTING_ASSISTANT_JWT')
 CASTING_DIRECTOR = os.environ.get('CASTING_DIRECTOR_JWT')
 EXECUTIVE_PRODUCER = os.environ.get('EXECUTIVE_PRODUCER_JWT')
 
+
 class TalentManagementAgencyTestCase(unittest.TestCase):
+
     def setUp(self):
-        # Define test variables and initialize app.
-        self.app = create_app()
+        """Define test variables and initialize app."""
         self.client = self.app.test_client
         self.database_name = "test_talentagency"
-        self.database_path = "postgresql://{}:{}@{}:{}/{}".format(
-            'postgres', 'Psqlpass!', 'localhost', '5432', self.database_name)
-        setup_db(self.app, self.database_path)
-
-        # Binds the app to the current context
-        #with self.app.app_context():
-            #self.db = SQLAlchemy()
-            #self.db.init_app(self.app)
-            # create all tables
-            #self.db.create_all(bind=None)
-
-        # Sample movie data for testing
-        self.sample_movie = {
-            'title': 'Test Movie',
-            'release_date': '2023-01-01'
-        }
+        #self.database_path = "postgresql://localhost:5432/test_talentagency"
+        self.database_path = "postgresql://{}/{}".format('localhost:5432', self.database_name)
+        self.app = create_app(self.database_path)
 
     def tearDown(self):
         # Drop all tables after each test
-        with self.app.app_context():
-            self.db.drop_all(bind=None)
+        pass
+        # with self.app.app_context():
+        #     self.db.drop_all(bind=None)
 
     # def test_get_actors(self):
     #     res = {}
@@ -72,12 +61,19 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
     #     self.assertEqual(data['success'], True)
     
     def test_create_movie(self):
+        sample_movie = {
+            'title': 'The Incredible Hulk',
+            'release_date': 2008
+        }
+
         response = self.client().post(
             '/movies',
-            json=self.sample_movie,
+            json=sample_movie,
             headers={'Authorization': f'Bearer {CASTING_DIRECTOR}'}
         )
+        print(response.data)
         data = json.loads(response.data)
+        
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
