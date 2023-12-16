@@ -2,21 +2,31 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from models import setup_db, Movie, Actor, db
+from models import Movie, Actor, db
 from auth import AuthError, requires_auth
 
-
-def create_app(test_config=None):
-    # create and configure the app
+def create_app(database_path,test_config=None):
     app = Flask(__name__)
     CORS(app)
+    app.config.from_mapping(
+        SQLALCHEMY_DATABASE_URI=database_path
+    )
+    
+    if test_config is not None:
+        app.config.from_mapping(test_config)
+
+    db.init_app(app)
+
     with app.app_context():
-        setup_db(app)
+        db.create_all()
 
     return app
 
-app = create_app()
+database_name = "talentagency"
+database_path = "postgresql://{}/{}".format('localhost:5432', database_name)
 
+db = SQLAlchemy()
+app = create_app(database_path=database_path,test_config=None)
 
 '''
 -------------------------- ENDPOINTS ------------------------------------------
@@ -113,7 +123,7 @@ def create_movie(jwt):
 
         return jsonify({
             'success': True,
-            'actor': [movie.format()]
+            'movie': [movie.format()]
         }), 200
     except:
         abort(422)
