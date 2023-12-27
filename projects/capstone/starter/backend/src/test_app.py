@@ -56,6 +56,7 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
             db.drop_all()
         # pass
 
+    # --- Create movie
     def test_create_movie(self):
         sample_movie = {
             'title': 'The Incredible Hulk',
@@ -66,11 +67,26 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
             json=sample_movie,
             headers={'Authorization': f'Bearer {EXECUTIVE_PRODUCER}'}
         )
-        print(response.data)
         data = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(True, True)
 
+    def test_error_create_movie(self):
+        sample_movie = {
+            'title': 'The Incredible Hulk',
+            #'release_date': "Jan"
+        }
+        response = self.client().post(
+            '/movies',
+            json=sample_movie,
+            headers={'Authorization': f'Bearer {EXECUTIVE_PRODUCER}'}
+        )
+        print(f"res: {response}")
+        print(response.data)
+        data = json.loads(response.data)
+        self.assertEqual(response.status_code, 404)
+
+    # --- Create actor
     def test_create_actor(self):
         sample_actor = {
             'name': 'Bruce Banner',
@@ -86,6 +102,10 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
+    # def test_error_create_actor():
+    #     pass
+
+    # --- Get movies
     def test_get_movies(self):
         res = self.client().get(
             '/movies',
@@ -95,6 +115,16 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
+    def test_error_get_movies(self):
+        res = self.client().get(
+            '/movies/100',
+            headers={
+                'Authorization': 'Bearer ' + EXECUTIVE_PRODUCER})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+
+    # --- Get actors
     def test_get_actors(self):
         res = self.client().get(
             '/actors',
@@ -104,6 +134,16 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
+    def test_error_get_actors(self):
+        res = self.client().get(
+            '/actors/100',
+            headers={
+                'Authorization': 'Bearer ' + EXECUTIVE_PRODUCER})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+
+    # --- Update actor
     def test_update_actor(self):
         update_actor = {
             'name': 'Arnold Shwarzeneger (One and Only)',
@@ -119,6 +159,22 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
+    def test_error_update_actor(self):
+        update_actor = {
+            'name': 'Stan Lee',
+            'age': '99',
+            'gender': 'Male'
+        }
+        res = self.client().patch(
+            '/actors/1000',
+            json=update_actor,
+            headers={
+                'Authorization': 'Bearer ' + EXECUTIVE_PRODUCER})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+
+    # --- Update movie
     def test_update_movie(self):
         update_movie = {
             'title': 'Terminator Genesis',
@@ -133,6 +189,21 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
+    def test_error_update_movie(self):
+        update_movie = {
+            'title': 'Guardians of the Galaxy',
+            'release_date': '2014'
+        }
+        res = self.client().patch(
+            '/movies/1000',
+            json=update_movie,
+            headers={
+                'Authorization': 'Bearer ' + EXECUTIVE_PRODUCER})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+
+    # --- Delete actor
     def test_delete_actor(self):
         res = self.client().delete(
             '/actors/1',
@@ -143,6 +214,17 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
+    def test_error_delete_actor(self):
+        res = self.client().delete(
+            '/actors/1000',
+            headers={
+                'Authorization': 'Bearer ' + EXECUTIVE_PRODUCER}
+        )
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        
+    # --- Delete movie
     def test_delete_movie(self):
         res = self.client().delete(
             '/movies/1',
@@ -152,6 +234,16 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
+
+    def test_error_delete_movie(self):
+        res = self.client().delete(
+            '/movies/1000',
+            headers={
+                'Authorization': 'Bearer ' + EXECUTIVE_PRODUCER}
+        )
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

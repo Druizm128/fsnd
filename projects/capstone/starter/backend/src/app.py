@@ -27,6 +27,10 @@ def create_app(database_path, test_config=None):
     @requires_auth('get:actors')
     def get_actors(jwt):
         actors = Actor.query.all()
+
+        if len(actors) == 0:
+            abort(404)
+
         return jsonify({
             'success': True,
             'actors': [actors.format() for actors in actors]
@@ -36,6 +40,10 @@ def create_app(database_path, test_config=None):
     @requires_auth('get:movies')
     def get_movies(jwt):
         movies = Movie.query.all()
+
+        if len(movies) == 0:
+            abort(404)
+
         return jsonify({
             'success': True,
             'movies': [movie.format() for movie in movies]
@@ -194,6 +202,15 @@ def create_app(database_path, test_config=None):
             "success": False,
             "error": 404,
             "message": "resource not found"
+        }), 404
+    
+    @app.errorhandler(405)
+    def not_found(error):
+        '''implement error handler for 404'''
+        return jsonify({
+            "success": False,
+            "error": 405,
+            "message": "method not allowed"
         }), 404
 
 
