@@ -258,6 +258,34 @@ URL:
     }
     ```
 
+## API Permissions
+
+* Producer
+
+  - `get:actors`: Get actors	
+  - `get:movies`: Get movies	
+  - `delete:actors`: Delete an actor	
+  - `delete:movies`: Delete a movie	
+  - `post:actors`: Create a new actor	
+  - `post:movies`: Create a new movie	
+  - `patch:actors`: Modify an actor	
+  - `patch:movies`: Modify a movie
+
+* Director
+
+  - `get:actors`: Get actors	
+  - `get:movies`: Get movies	
+  - `delete:actors`: Delete an actor	
+  - `post:actors`: Create a new actor	
+  - `patch:actors`: Modify an actor	
+  - `patch:movies`: Modify a movie
+
+* Assitant
+
+  - `get:actors`: Get actors	
+  - `get:movies`: Get movies
+
+
 ## Local execution
 
 ### Set up and Populate the Database
