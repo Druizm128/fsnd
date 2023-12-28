@@ -241,6 +241,3 @@ if database_path.startswith("postgres://"):
   database_path = database_path.replace("postgres://", "postgresql://", 1)
 
 app = create_app(database_path=database_path, test_config=None)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
