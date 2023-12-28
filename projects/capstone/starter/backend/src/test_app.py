@@ -27,8 +27,7 @@ class TalentManagementAgencyTestCase(unittest.TestCase):
     def setUp(self):
         """Define test variables and initialize app."""
         self.database_name = "test_talentagency"
-        #self.database_path = "postgresql://localhost:5432/{}".format(self.database_name)
-        self.database_path = "postgresql://localhost:5432/test_talentagency"
+        self.database_path = "postgresql://{}/{}".format('localhost:5432', self.database_name)
         self.app = create_app(database_path=self.database_path)
         self.client = self.app.test_client
         with self.app.app_context():

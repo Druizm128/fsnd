@@ -194,6 +194,15 @@ def create_app(database_path, test_config=None):
             "message": "bad request"
         }), 400
 
+    @app.errorhandler(403)
+    def forbidden(error):
+        '''implement error forbidden for 403'''
+        return jsonify({
+            "success": False,
+            "error": 403,
+            "message": "forbidden"
+        }), 403
+
 
     @app.errorhandler(404)
     def not_found(error):
