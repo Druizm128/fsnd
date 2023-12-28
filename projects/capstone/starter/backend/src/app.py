@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import Movie, Actor, db, setup_db
 from auth import AuthError, requires_auth
+import sqlalchemy as sa
 
 def create_app(database_path, test_config=None):
     # create and configure the app
@@ -17,6 +18,18 @@ def create_app(database_path, test_config=None):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
         response.headers.add('Access-Control-Allow-Headers', 'GET, POST, PATCH, DELETE, OPTIONS')
         return response
+    
+    # Check if the database needs to be initialized
+    engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+    inspector = sa.inspect(engine)
+    if not inspector.has_table("users"):
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+            app.logger.info('Initialized the database!')
+    else:
+        app.logger.info('Database already contains the users table.')
+
 
     '''
     -------------------------- ENDPOINTS ------------------------------------------
