@@ -237,6 +237,8 @@ def create_app(database_path, test_config=None):
 database_name = "talentagency"
 #database_path = "postgresql://{}/{}".format('localhost:5432', database_name)
 database_path = os.environ['DATABASE_URL']
+if database_path.startswith("postgres://"):
+  database_path = database_path.replace("postgres://", "postgresql://", 1)
 
 app = create_app(database_path=database_path, test_config=None)
 
