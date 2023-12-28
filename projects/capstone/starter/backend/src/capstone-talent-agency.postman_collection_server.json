@@ -1,0 +1,595 @@
+{
+	"info": {
+		"_postman_id": "fda3c316-a8cc-470c-b863-b7d099c35a1d",
+		"name": "capstone-talent-agency",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30500506"
+	},
+	"item": [
+		{
+			"name": "Producer",
+			"item": [
+				{
+					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"The Incredible Hulk\",\n    \"release_date\": 2008\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/movies"
+					},
+					"response": []
+				},
+				{
+					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Robert Downey Jr.\",\n    \"age\": \"58\",\n    \"gender\": \"M\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/actors"
+					},
+					"response": []
+				},
+				{
+					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains movies array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movies).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/movies"
+					},
+					"response": []
+				},
+				{
+					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains movies array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actors).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/actors"
+					},
+					"response": []
+				},
+				{
+					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains movie array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movie).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"The Incredible Hulk (Marvel)\",\n    \"release_date\": \"2008\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/movies/2"
+					},
+					"response": []
+				},
+				{
+					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains actor array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actor).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Robert Downey Jr. (The One and Only)\",\n    \"age\": \"58\",\n    \"gender\": \"M\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/actors/3"
+					},
+					"response": []
+				},
+				{
+					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{host}}/movies/1"
+					},
+					"response": []
+				},
+				{
+					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{host}}/actors/1"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": {
+					"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlVZVFdtMW5UcVhLU045WFktZlpOVSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zYjc3YTczenQ4Z2RmbGptLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NTNmMTA2MmVlNGJmNGE4OTYwZmU0NGEiLCJhdWQiOiJ0YWxlbnQtbWFuYWdlbWVudC1hZ2VuY3kiLCJpYXQiOjE3MDM3ODc3OTksImV4cCI6MTcwMzc5NDk5OSwiYXpwIjoiRDZmTzF6ejRzcm9EV0xsMDV6VXpwVVFVSmlxcDh3WXoiLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3Q6bW92aWVzIl19.K8fZJfLYk133yI6xjMg6o3Ak88E3YxUhL9B34SYHanRHNxPrFuDpKiBNBjwFmVFxlapYu58G_dYngt3293Wh_-hHh0kMRfF5q8nei0RL6jjWTRTzpa8Gzjvk4Ds4eOOD9_JCFd1RCc6PpkDD60qpZj8knJPSd2vJ_SdqnsX_Sz988PzeCYRrwDuM6MHj0B4fJTFUKOQtanJMFb5IuQS0bnmoDZiM7-DqZMQGf9PbvuU7SLHdy5omavotzRPGngixa8Cby2JCl9pMU41mlUnLqVqz1ujWynauTFj-bOfUIeAsP_81g0k_Awy2D_6-4gvfGZsEEQOPil3QYAy_-9ObRA"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Director",
+			"item": [
+				{
+					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Mark Ruffalo\",\n    \"age\": \"56\",\n    \"gender\": \"M\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/actors"
+					},
+					"response": []
+				},
+				{
+					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actors).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/actors"
+					},
+					"response": []
+				},
+				{
+					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movies).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/movies"
+					},
+					"response": []
+				},
+				{
+					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains actor array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actor).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Mark Ruffalo (The One and Only)\",\n    \"age\": \"56\",\n    \"gender\": \"M\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/actors/2"
+					},
+					"response": []
+				},
+				{
+					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains movie array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movie).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"The Incredible Hulk (Marvel) (The best movie)\",\n    \"release_date\": \"2008\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{host}}/movies/1"
+					},
+					"response": []
+				},
+				{
+					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{host}}/actors/2"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": {
+					"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlVZVFdtMW5UcVhLU045WFktZlpOVSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zYjc3YTczenQ4Z2RmbGptLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NTNmMTA2MmVlNGJmNGE4OTYwZmU0NGEiLCJhdWQiOiJ0YWxlbnQtbWFuYWdlbWVudC1hZ2VuY3kiLCJpYXQiOjE3MDM3ODc3OTksImV4cCI6MTcwMzc5NDk5OSwiYXpwIjoiRDZmTzF6ejRzcm9EV0xsMDV6VXpwVVFVSmlxcDh3WXoiLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3Q6bW92aWVzIl19.K8fZJfLYk133yI6xjMg6o3Ak88E3YxUhL9B34SYHanRHNxPrFuDpKiBNBjwFmVFxlapYu58G_dYngt3293Wh_-hHh0kMRfF5q8nei0RL6jjWTRTzpa8Gzjvk4Ds4eOOD9_JCFd1RCc6PpkDD60qpZj8knJPSd2vJ_SdqnsX_Sz988PzeCYRrwDuM6MHj0B4fJTFUKOQtanJMFb5IuQS0bnmoDZiM7-DqZMQGf9PbvuU7SLHdy5omavotzRPGngixa8Cby2JCl9pMU41mlUnLqVqz1ujWynauTFj-bOfUIeAsP_81g0k_Awy2D_6-4gvfGZsEEQOPil3QYAy_-9ObRA"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Assistant",
+			"item": [
+				{
+					"name": "/actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actors).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/actors"
+					},
+					"response": []
+				},
+				{
+					"name": "/movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains drinks array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movies).to.be.an('array')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/movies"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": {
+					"token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlVZVFdtMW5UcVhLU045WFktZlpOVSJ9.eyJpc3MiOiJodHRwczovL2Rldi1zYjc3YTczenQ4Z2RmbGptLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NTRmZTM5MDNlMDVkZDg5YTE1Njk5NWYiLCJhdWQiOiJ0YWxlbnQtbWFuYWdlbWVudC1hZ2VuY3kiLCJpYXQiOjE3MDM3ODk0MzMsImV4cCI6MTcwMzc5NjYzMywiYXpwIjoiRDZmTzF6ejRzcm9EV0xsMDV6VXpwVVFVSmlxcDh3WXoiLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIl19.ABfow4UGCptJjWsvuNkTYGlpuaezdWz3CPhOHzw6GVm2qVNIRqd1d0trlvCJmVXXjax8O90ND62NqTj8MXIug01vCloDycjLTQWY_Tf1feeqeLfeMUCu6RPHtIJEr7k_mato1Z5zwc_obuQuVhuKUwNgnb6LjrwgX7Q7-8oeU-WqZI6Vg447vGlkykoEFYBCDZ6iWSYFlxo_TkZILnIX9WtOvksF1jICRjaM0s8Hvt-5p3CuGlIxJSrv5JQckaCKva4p_U3MBmBy2-XMGixxtXaS8T3SCpymj4a10tjd9Cuh04xHg7gDX35EqQjX9icemm-ECHUewg_KHpzjqur4pA"
+				}
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "https://talent-management-app.onrender.com",
+			"type": "string"
+		}
+	]
+}
